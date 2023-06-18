@@ -44,9 +44,30 @@ Users would simply upload screenshots of their ultrasound image, and then receiv
 
 ### Contact our team
 
- Our team at AF Discovery consists of highly specialized and educated researchers with backgrounds in machine learning, computer science, and biology. We’d be happy to answer any questions you may have!
+Our team at AF Discovery consists of highly specialized and educated researchers with backgrounds in machine learning, computer science, and biology. We'd be happy to answer any questions you may have!
 
-Ann K. Chou -- Annkchou at gmail dot com
+- Arfaa Rashid
+  - B.Sc. in Computer Science at the University of Windsor
+
+- Ann-K Chou
+  - M.Sc. in Interactive Arts & Technology from Simon Fraser University
+  - LinkedIn: [Ann-K Chou LinkedIn](https://www.linkedin.com/in/annkchou/)
+  - GitHub: [Ann-K Chou GitHub](https://github.com/annkchou)
+
+- Huma Noor
+  - B.Sc. in Biochemical Biophysics and Bioethics from University of Toronto
+
+- Mehjabin Rahman
+  - M.Sc. at Toronto Metropolitan University
+
+- Seida Ahmed
+  - M.Sc. at University of Toronto
+  - GitHub: [Seida Ahmed GitHub](https://github.com/SeidaAhmed)
+
+
+- Karissa Chan (Teaching Assistant)
+  - M.Sc. at Toronto Metropolitan University
+  - LinkedIn: [Karissa Chan LinkedIn](https://www.linkedin.com/in/karissa-chan/)
 
 ## Presention and Demo
 You can access the presentation and demo of our project [here](https://www.figma.com/proto/LetYxHdyqilbbD0F1KBtLf/AF-Discovery?type=design&node-id=2-2313&scaling=scale-down&page-id=0%3A1&starting-point-node-id=9%3A6275).
