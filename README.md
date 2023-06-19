@@ -138,5 +138,5 @@ My involvement in this project begins with the initiation of the idea, derived f
 In terms of project tasks, I handled data preprocessing, including data splitting, augmentation, image resizing, and binarization. Additionally, I implemented the u-net model using TensorFlow/Keras, utilizing the image data generator. Finally, I evaluated our model's accuracy using the Similarity Coefficient matrix.
 
 Connect with me:
-- [![LinkedIn](https://img.shields.io/badge/LinkedIn-Ann%20K%20Chou-blue?style=flat&logo=linkedin)](https://www.linkedin.com/in/seida-ahmed-2129a95b/)
+- Follow me on LinkedIn: www.linkedin.com/comm/mynetwork/discovery-see-all?usecase=PEOPLE_FOLLOWS&followMember=seida-ahmed-2129a95b
   
