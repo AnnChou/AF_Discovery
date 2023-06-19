@@ -8,8 +8,8 @@ from keras.layers import *
 from keras.optimizers import *
 from keras.callbacks import ModelCheckpoint, LearningRateScheduler
 from keras import backend as keras
-from utils import dice_coeff, bce_dice_loss
-
+from tensorflow.keras.utils import Sequence
+from data import *
 
 def unet(pretrained_weights = None,input_size = (256,256,1)):
     inputs = Input(input_size)
@@ -55,7 +55,10 @@ def unet(pretrained_weights = None,input_size = (256,256,1)):
 
     model = Model(inputs = inputs, outputs = conv10)
 
-    model.compile(optimizer = Adam(lr = 1e-4), loss = bce_dice_loss, metrics = [tf.keras.metrics.binary_accuracy,dice_coeff])
+    #model.compile(optimizer = Adam(lr = 1e-4), loss = 'binary_crossentropy', metrics = ['accuracy'])
+    
+    loss_fn = bce_dice_loss
+    model.compile(optimizer = tf.keras.optimizers.Adam(lr = 1e-4), loss = loss_fn, metrics = [tf.keras.metrics.binary_accuracy, dice_coeff])
     
     #model.summary()
 
@@ -63,5 +66,3 @@ def unet(pretrained_weights = None,input_size = (256,256,1)):
     	model.load_weights(pretrained_weights)
 
     return model
-
-

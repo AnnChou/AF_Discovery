@@ -5,9 +5,14 @@ import os
 import glob
 import skimage.io as io
 import skimage.transform as trans
+import numpy as np
+import keras
+from PIL import Image
+import tensorflow as tf 
+from tensorflow.keras.losses import binary_crossentropy
+from skimage import img_as_ubyte
+import cv2
 
-#...
-"""
 Sky = [128,128,128]
 Building = [128,0,0]
 Pole = [192,192,128]
@@ -20,21 +25,10 @@ Car = [64,0,128]
 Pedestrian = [64,64,0]
 Bicyclist = [0,128,192]
 Unlabelled = [0,0,0]
-"""
-AF = [255,255,255]
-Rest = [0,0,0]
 
-#...
-#COLOR_DICT = np.array([Sky, Building, Pole, Road, Pavement,Tree, SignSymbol, Fence, Car, Pedestrian, Bicyclist, Unlabelled])
-COLOR_DICT = np.array([AF, Rest])
+COLOR_DICT = np.array([Sky, Building, Pole, Road, Pavement,
+                          Tree, SignSymbol, Fence, Car, Pedestrian, Bicyclist, Unlabelled])
 
-#...already using ImageDataGenerator - https://www.tensorflow.org/api_docs/python/tf/keras/preprocessing/image/ImageDataGenerator
-# M/S aug: rotate, add noise, crop, flip(?) // IDG flips/rotates. does not crop (?) or add noise 
-# clarify: preprocessing should also done here/is part of dataloader right? point was to avoid having to upload separately
-# just import prepr function and run through that first right?
-# are annotation/label/mask/ground truth the same thing?
-# so: load data -> run prepr function -> run aug function [trainGenerator?] -> etc. ?
-# what's geneTrainNpy() doing?
 
 def adjustData(img,mask,flag_multi_class,num_class):
     if(flag_multi_class):
@@ -56,7 +50,8 @@ def adjustData(img,mask,flag_multi_class,num_class):
         mask[mask <= 0.5] = 0
     return (img,mask)
 
-#change prefixes?
+
+
 def trainGenerator(batch_size,train_path,image_folder,mask_folder,aug_dict,image_color_mode = "grayscale",
                     mask_color_mode = "grayscale",image_save_prefix  = "image",mask_save_prefix  = "mask",
                     flag_multi_class = False,num_class = 2,save_to_dir = None,target_size = (256,256),seed = 1):
@@ -92,9 +87,13 @@ def trainGenerator(batch_size,train_path,image_folder,mask_folder,aug_dict,image
         img,mask = adjustData(img,mask,flag_multi_class,num_class)
         yield (img,mask)
 
+
+
 def testGenerator(test_path,num_image = 30,target_size = (256,256),flag_multi_class = False,as_gray = True):
-    for i in range(num_image):
-        img = io.imread(os.path.join(test_path,"%d.png"%i),as_gray = as_gray)
+   
+    image_lists=os.listdir(test_path)
+    for image_list in image_lists:
+        img = io.imread(test_path+image_list,as_gray = as_gray)
         img = img / 255
         img = trans.resize(img,target_size)
         img = np.reshape(img,img.shape+(1,)) if (not flag_multi_class) else img
@@ -128,7 +127,82 @@ def labelVisualize(num_class,color_dict,img):
 
 
 
-def saveResult(save_path,npyfile,flag_multi_class = False,num_class = 2):
+def saveResult(image_path,save_path,npyfile,flag_multi_class = False,num_class = 2):
+    image_lists=os.listdir(image_path)
+  
+    img_list=[]
     for i,item in enumerate(npyfile):
-        img = labelVisualize(num_class,COLOR_DICT,item) if flag_multi_class else item[:,:,0]
-        io.imsave(os.path.join(save_path,"%d_predict.png"%i),img)
+        img=labelVisualize(num_class,COLOR_DICT,item) if flag_multi_class else item[:,:,0]
+        img_list.append(img)
+    j=0
+    for image_list in image_lists:
+        
+        io.imsave(os.path.join(save_path,image_list),img_as_ubyte(img_list[j]))
+        j+=1
+       
+def augment(image, annotation):
+    # Augmentation img
+    aug_img = iaa.Sequential([
+            iaa.GaussianBlur(sigma=(0, 3.0)),
+            iaa.AdditiveGaussianNoise(scale=(0, 0.05 * 255)),
+            iaa.Affine(rotate=(-45, 45)),
+            iaa.Multiply((0.8, 1.2))
+          ])
+    image_augmented = aug_img.augment_image(image)
+    # Augmentation annot
+    annot_aug= iaa.Sequential([
+            iaa.GaussianBlur(sigma=(0, 3.0)),
+            iaa.AdditiveGaussianNoise(scale=(0, 0.05 * 255)),
+            iaa.Affine(rotate=(-45, 45)),
+            iaa.Multiply((0.8, 1.2))
+          ])
+    annotation_augmented=annot_aug.augment_image(annotation)
+      
+    return image_augmented,annotation_augmented
+        
+def dice_coeff(y_true, y_pred):
+    smooth = 1.
+    # Flatten
+    y_true = tf.cast(y_true, dtype=tf.float32)  # Convert labels to float32
+    y_pred = tf.cast(y_pred, dtype=tf.float32)
+    y_true_f = tf.reshape(y_true, [-1])
+    y_pred_f = tf.reshape(y_pred, [-1])
+    intersection = tf.reduce_sum(y_true_f * y_pred_f)
+    score = (2. * intersection + smooth) / (tf.reduce_sum(y_true_f) + tf.reduce_sum(y_pred_f) + smooth)
+    return score
+def dice_loss(y_true, y_pred):
+    loss = 1 - dice_coeff(y_true, y_pred)
+    return loss
+def bce_dice_loss(y_true, y_pred):
+    loss = binary_crossentropy(y_true, y_pred) + dice_loss(y_true, y_pred)
+    return loss
+        
+        
+def fill_labels(folder_dir = "label"):
+  '''Fill in the label ellipses'''
+  for image in os.listdir(folder_dir):
+      # Read image
+      if (image.endswith(".png")):
+        im_in = cv2.imread(folder_dir + '/' + image, cv2.IMREAD_GRAYSCALE);
+        
+        # Threshold
+        th, im_th = cv2.threshold(im_in, 127, 255, cv2.THRESH_BINARY)
+  
+        # Copy the thresholded image
+        im_floodfill = im_th.copy()
+  
+        # Mask used to flood filling.
+        # NOTE: the size needs to be 2 pixels bigger on each side than the input image
+        h, w = im_th.shape[:2]
+        mask = np.zeros((h+2, w+2), np.uint8)
+  
+        # Floodfill from point (0, 0)
+        cv2.floodFill(im_floodfill, mask, (0,0), 255)
+  
+        # Invert floodfilled image
+        im_floodfill_inv = cv2.bitwise_not(im_floodfill)
+  
+        # Combine the two images to get the foreground
+        im_out = im_th | im_floodfill_inv
+      
+        cv2.imwrite(folder_dir+ '_filled/' + image[:-4]+"_filled.png", im_out)  
