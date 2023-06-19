@@ -122,7 +122,21 @@ As a soon-to-graduate Master of Science student in Interactive Arts and Technolo
 
 My main contributions to the project were focused on the downstream tasks of the UNet model. I worked on post-processing techniques to refine the output of my colleague's UNet model, which was in the form of a binary image. Additionally, I developed regression models to predict the head circumference based on the segmented ultrasound images. These efforts were crucial in providing accurate and meaningful outcomes for our machine learning solution. I am proud to have played a role in enhancing the performance and usability of our model.
 
+
+
 Connect with me:
 - [![LinkedIn](https://img.shields.io/badge/LinkedIn-Ann%20K%20Chou-blue?style=flat&logo=linkedin)](https://www.linkedin.com/in/annkchou/)
 - [![Instagram](https://img.shields.io/badge/Instagram-annreflection-purple?style=flat&logo=instagram)](https://www.instagram.com/annreflection/)
 - ![Hard of Hearing](Img/Assistive_Listening_Devices_2.png)
+
+
+## Seida Ahmed Individual Contribution 
+
+
+My involvement in this project begins with the initiation of the idea, derived from my personal experience.. While pregnant with my first baby, I faced the challenge of low Amniotic Fluid Volume during the third trimester, leading to an elective Cesarian Section. The inconsistent results from various check-ups made it difficult for me to make an informed decision. This made me realize that many women worldwide may face similar problems. Moreover, the limited availability of physicians in Ethiopia further highlighted the need for automation in measuring amniotic fluid levels, allowing doctors to save more lives.
+
+In terms of project tasks, I handled data preprocessing, including data splitting, augmentation, image resizing, and binarization. Additionally, I implemented the u-net model using TensorFlow/Keras, utilizing the image data generator. Finally, I evaluated our model's accuracy using the Similarity Coefficient matrix.
+
+Connect with me:
+- [![LinkedIn](https://www.linkedin.com/in/seida-ahmed-2129a95b/)
+  
