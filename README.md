@@ -48,6 +48,7 @@ Our team at AF Discovery consists of highly specialized and educated researchers
 
 - Arfaa Rashid
   - B.Sc. in Computer Science at the University of Windsor
+  - GitHub: [Arfaa Github] (https://github.com/arfaamr)
 
 - Ann-K Chou
   - M.Sc. in Interactive Arts & Technology from Simon Fraser University
